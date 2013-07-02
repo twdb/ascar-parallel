@@ -35,7 +35,7 @@ class StartCluster():
                 print '... waiting for 5 secs for parallel engines to start'
                 sleep(5)
 
-            parallel_client = Client(profile='sge', cluster_id=cluster_id)
+            rc = Client(profile='sge', cluster_id=cluster_id)
             self.cluster_id = cluster_id
             self.connection_file = connection_file
             self.pwd = os.getcwd()
@@ -50,11 +50,11 @@ class StartCluster():
             p1 = Popen(['ipcluster', 'start', '-n ' + str(self.n_cpus), '--daemonize'])
             print '... waiting for 5 secs to ensure that all engines are available'
             sleep(5)
-            parallel_client = Client()
+            rc = Client()
 
         if self.imports:
-            rc = parallel_client.direct_view()
-            with rc[:].sync_imports():
+            dview = rc[:]
+            with dview.sync_imports():
                 for import_str in self.imports:
                     exec(import_str)
 
