@@ -10,8 +10,9 @@ from IPython.parallel import Client
 ASCAR_DEFAULT_NCPUS = 64
 
 class StartCluster():
-    def __init__(self, n_cpus):
+    def __init__(self, n_cpus, imports=None):
         self.n_cpus = n_cpus
+        self.imports = imports
 
     def __enter__(self):
         "Start IPython Parallel Engines"
@@ -50,6 +51,11 @@ class StartCluster():
             print '... waiting for 5 secs to ensure that all engines are available'
             sleep(5)
             parallel_client = Client()
+
+        if self.imports:
+            with parallel_client[:].sync_imports():
+                for import_str in self.imports:
+                    exec(import_str)
 
         lview = parallel_client.load_balanced_view()
         lview.block = True
