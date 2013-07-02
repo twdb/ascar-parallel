@@ -11,7 +11,6 @@ Options:
 
 from docopt import docopt
 from ascar_parallel import StartCluster
-from IPython.parallel import depend
 from time import time
 
 def myfunc(a,b):
