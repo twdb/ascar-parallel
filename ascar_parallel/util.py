@@ -22,25 +22,22 @@ class StartCluster():
             if not self.n_cpus:
                 self.n_cpus = ASCAR_DEFAULT_NCPUS
 
-            home_dir = os.path.expanduser('~')
-            profile_name = 'sge_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
-            profile_path = home_dir + '/.config/ipython/profile_' + profile_name
-            shutil.copytree(home_dir + '/.config/ipython/profile_sge/', profile_path)
-            shutil.rmtree(profile_path + '/security')
+            cluster_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
 
             print 'Starting parallel engine and clients on Ascar with ' + str(self.n_cpus) + ' cpus'
-            p1 = Popen(['ipcluster', 'start', '--profile=' + profile_name, '-n ' + str(self.n_cpus), '--daemonize'])
+            p1 = Popen(['ipcluster', 'start', '--profile=sge', '--cluster-id=' + cluster_id, '-n ' + str(self.n_cpus), '--daemonize'])
 
             #need to wait till engines are started and connection file is created.
-            connection_file = home_dir + '/.config/ipython/profile_' + profile_name + '/security/ipcontroller-client.json'
+            home_dir = os.path.expanduser('~')
+            connection_file = home_dir + '/.config/ipython/profile_sge/security/ipcontroller-' + cluster_id + '-client.json'
             print '... checking for connection file: ', connection_file
             while not os.path.isfile(connection_file):
                 print '... waiting for 5 secs for parallel engines to start'
                 sleep(5)
 
             parallel_client = Client(profile=profile_name)
-            self.profile_name = profile_name
-            self.profile_path = profile_path
+            self.cluster_id = cluster_id
+            self.connection_file = connection_file
 
         else:
             #start local multicore cluster
@@ -64,13 +61,13 @@ class StartCluster():
         print 'Shutting down parallel engines'
         # close parallel engine
         if platform.uname()[1].split('.')[0] == 'ascar':
-            p2 = Popen(['ipcluster', 'stop', '--profile=' + self.profile_name])
+            p1 = Popen(['ipcluster', 'start', '--profile=sge', '--cluster-id=' + self.cluster_id])
             print 'Cleaning up temp files'
-            shutil.rmtree(profile_path)
+            os.remove(self.connection_file)
             os.remove(os.path.join(self.pwd, 'sge_controller'))
             os.remove(os.path.join(self.pwd, 'sge_engine'))
         else:
             p2 = Popen(['ipcluster', 'stop'])
 
-        
-        
+
+
