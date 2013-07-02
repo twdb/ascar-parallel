@@ -22,7 +22,7 @@ class StartCluster():
             if not self.n_cpus:
                 self.n_cpus = ASCAR_DEFAULT_NCPUS
 
-            cluster_id = datetime.datetime.now().strftime('%Y%m%d%H%M%S')
+            cluster_id = datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
 
             print 'Starting parallel engine and clients on Ascar with ' + str(self.n_cpus) + ' cpus'
             p1 = Popen(['ipcluster', 'start', '--profile=sge', '--cluster-id=' + cluster_id, '-n ' + str(self.n_cpus), '--daemonize'])
