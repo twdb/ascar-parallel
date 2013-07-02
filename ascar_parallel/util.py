@@ -15,7 +15,6 @@ class StartCluster():
 
     def __enter__(self):
         "Start IPython Parallel Engines"
-        print 'test'
         # Check if we are on the cluster Ascar
         if platform.uname()[1].split('.')[0] == 'ascar':
             #start SGE cluster
@@ -38,6 +37,7 @@ class StartCluster():
             parallel_client = Client(profile='sge', cluster_id=cluster_id)
             self.cluster_id = cluster_id
             self.connection_file = connection_file
+            self.pwd = os.getcwd()
 
         else:
             #start local multicore cluster
