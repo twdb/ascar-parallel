@@ -35,7 +35,7 @@ class StartCluster():
                 print '... waiting for 5 secs for parallel engines to start'
                 sleep(5)
 
-            parallel_client = Client(profile='sge')
+            parallel_client = Client(profile='sge', cluster_id=cluster_id)
             self.cluster_id = cluster_id
             self.connection_file = connection_file
 
