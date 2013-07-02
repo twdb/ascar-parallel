@@ -40,6 +40,7 @@ class StartCluster():
 
             parallel_client = Client(profile=profile_name)
             self.profile_name = profile_name
+            self.profile_path = profile_path
 
         else:
             #start local multicore cluster
@@ -59,11 +60,17 @@ class StartCluster():
         return lview
 
     def __exit__(self, type, value, traceback):
-        "Shut down cluster once program is complete"
+        "Shut down cluster and cleanup temp files once program is complete"
         print 'Shutting down parallel engines'
         # close parallel engine
         if platform.uname()[1].split('.')[0] == 'ascar':
             p2 = Popen(['ipcluster', 'stop', '--profile=' + self.profile_name])
+            print 'Cleaning up temp files'
+            shutil.rmtree(profile_path)
+            os.remove(os.path.join(self.pwd, 'sge_controller'))
+            os.remove(os.path.join(self.pwd, 'sge_engine'))
         else:
             p2 = Popen(['ipcluster', 'stop'])
 
+        
+        
