@@ -21,18 +21,23 @@ class StartCluster():
                 self.n_cpus = ASCAR_DEFAULT_NCPUS
 
             home_dir = os.path.expanduser('~')
+            profile_name = 'sge_' + datetime.datetime.now().strftime('%Y%m%d_%H%M%S')
+            profile_path = home_dir + '/.config/ipython/profile_' + profile_name
+            shutil.copytree(home_dir + '/.config/ipython/profile_sge/', profile_path)
+            shutil.rmtree(profile_path + '/security')
 
             print 'Starting parallel engine and clients on Ascar with ' + str(self.n_cpus) + ' cpus'
-            p1 = Popen(['ipcluster', 'start', '--profile=sge', '-n ' + str(self.n_cpus), '--daemonize'])
+            p1 = Popen(['ipcluster', 'start', '--profile=' + profile_name, '-n ' + str(self.n_cpus), '--daemonize'])
 
             #need to wait till engines are started and connection file is created.
-            connection_file = home_dir + '/.config/ipython/profile_sge/security/ipcontroller-client.json'
+            connection_file = home_dir + '/.config/ipython/profile_' + profile_name + '/security/ipcontroller-client.json'
             print '... checking for connection file: ', connection_file
             while not os.path.isfile(connection_file):
                 print '... waiting for 5 secs for parallel engines to start'
                 sleep(5)
 
-            parallel_client = Client(profile='sge')
+            parallel_client = Client(profile=profile_name)
+            self.profile_name = profile_name
 
         else:
             #start local multicore cluster
@@ -46,16 +51,17 @@ class StartCluster():
             sleep(5)
             parallel_client = Client()
 
-        worker = parallel_client.load_balanced_view()
-        worker.block = True
+        lview = parallel_client.load_balanced_view()
+        lview.block = True
 
-        return worker
+        return lview
 
     def __exit__(self, type, value, traceback):
         "Shut down cluster once program is complete"
         print 'Shutting down parallel engines'
         # close parallel engine
         if platform.uname()[1].split('.')[0] == 'ascar':
-            p2 = Popen(['ipcluster', 'stop', '--profile=sge'])
+            p2 = Popen(['ipcluster', 'stop', '--profile=' + self.profile_name])
         else:
             p2 = Popen(['ipcluster', 'stop'])
+
