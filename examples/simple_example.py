@@ -11,10 +11,9 @@ Options:
 
 from docopt import docopt
 from ascar_parallel import StartCluster
-from time import time
+from time import time, sleep
 
 def myfunc(a,b):
-    from time import sleep
     sleep(2)
     return a + b
 
@@ -35,9 +34,11 @@ if __name__ == '__main__':
     serial_time = time() - start
 
     parallel_result = None
+    imports = ['from time import sleep']
     start = time()
-    with StartCluster(ncpu) as lview:
+    with StartCluster(ncpu, imports=imports) as lview:
         parallel_result = lview.map(myfunc, a, b)
+
     parallel_time = time() - start
 
     if serial_result == parallel_result:
