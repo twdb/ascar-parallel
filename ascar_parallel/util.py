@@ -53,7 +53,8 @@ class StartCluster():
             parallel_client = Client()
 
         if self.imports:
-            with parallel_client[:].sync_imports():
+            rc = parallel_client.direct_view()
+            with rc[:].sync_imports():
                 for import_str in self.imports:
                     exec(import_str)
 
