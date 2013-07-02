@@ -23,7 +23,7 @@ class StartCluster():
             home_dir = os.path.expanduser('~')
 
             print 'Starting parallel engine and clients on Ascar with ' + str(self.n_cpus) + ' cpus'
-            p1 = Popen(['ipcluster', 'start', '--profile=sge', '-n ' + str(self.n_cpus)], '--daemonize')
+            p1 = Popen(['ipcluster', 'start', '--profile=sge', '-n ' + str(self.n_cpus), '--daemonize'])
 
             #need to wait till engines are started and connection file is created.
             connection_file = home_dir + '/.config/ipython/profile_' + profile_name +'/security/ipcontroller-client.json'
