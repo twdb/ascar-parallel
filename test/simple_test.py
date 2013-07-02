@@ -6,6 +6,6 @@ def test_simple_map():
 	parallel_result = None
 
 	with StartCluster(8) as lview:
-		parallel_result = map(lambda x:x**10, range(32))
+		parallel_result = lview.map(lambda x:x**10, range(32))
 
 	assert serial_result == parallel_result
