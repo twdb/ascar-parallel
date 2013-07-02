@@ -65,7 +65,7 @@ class StartCluster():
             print 'Cleaning up temp files'
             os.remove(self.connection_file)
             os.remove(os.path.join(self.pwd, 'sge_controller'))
-            os.remove(os.path.join(self.pwd, 'sge_engine'))
+            os.remove(os.path.join(self.pwd, 'sge_engines'))
         else:
             p2 = Popen(['ipcluster', 'stop'])
 
