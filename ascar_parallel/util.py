@@ -28,10 +28,9 @@ class StartCluster():
             p1 = Popen(['ipcluster', 'start', '--profile=sge', '--cluster-id=' + cluster_id, '-n ' + str(self.n_cpus), '--daemonize'])
 
             #need to wait till engines are started and connection file is created.
-            home_dir = os.path.expanduser('~')
-            connection_file = home_dir + '/.config/ipython/profile_sge/security/ipcontroller-' + cluster_id + '-client.json'
+
             print '... checking for connection file: ', connection_file
-            while not os.path.isfile(connection_file):
+            while not _cluster_started(cluster_id):
                 print '... waiting for 5 secs for parallel engines to start'
                 sleep(5)
 
@@ -76,5 +75,14 @@ class StartCluster():
         else:
             p2 = Popen(['ipcluster', 'stop'])
 
+
+    def _cluster_started(cluster_id):
+        home_dir = os.path.expanduser('~')
+        started = False
+        if os.isfile(home_dir + '/.config/ipython/profile_sge/security/ipcontroller-' + cluster_id + '-client.json'):
+            if os.isfile(home_dir + '/.config/ipython/profile_sge/security/ipcontroller-' + cluster_id + '-engine.json'):
+                started = True
+
+        return started
 
 
