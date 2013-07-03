@@ -51,7 +51,7 @@ class StartCluster():
 
         lview = rc.load_balanced_view()
         lview.block = True
-
+        print 'cluster started on ascar'
         return lview
 
 
