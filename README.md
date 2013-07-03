@@ -24,8 +24,11 @@ setting up ascar (one time stuff)
 		to instruct the controller to listen on all interfaces.
 
   * Edit ~/.config/ipython/profile_sge/ipcluster_config.py, adding the lines:
+
 		<code> c.IPClusterEngines.engine_launcher_class = 'SGEEngineSetLauncher'</code>
+
 		<code> c.IPClusterStart.controller_launcher_class = 'SGEControllerLauncher'</code>
+
 		<code> c.SGELauncher.queue = 'all.q'</code>
 
 
@@ -50,7 +53,9 @@ This package ascar-parallel does some of the boiler-plate of starting and stoppi
 It is already installed on the canopy python but for reference, to install:
 
 <code>$ git clone git@github.com:twdb/ascar-parallel.git </code>
+
 <code>$ cd ascar-parallel </code>
+
 <code>$ python setup.py install </code>
 
 
@@ -59,12 +64,12 @@ using ascar parallel
 
 in your code use the following:
 
-<code>
+```python
 from ascar_parallel import StartCluster
 
 with StartCluster(8) as lview:
 	lview.map(myfunc, <args>)
-</code>
+```
 
 more details in the examples folder
 
