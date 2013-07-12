@@ -74,8 +74,8 @@ class StartCluster():
     def _cluster_started(self, cluster_id):
         home_dir = os.path.expanduser('~')
         started = False
-        self.connection_files = [IPython.utils.path.get_ipython_dir() + '/profile_sge/security/ipcontroller-' + cluster_id + '-client.json',
-                                 IPython.utils.path.get_ipython_dir() + '/profile_sge/security/ipcontroller-' + cluster_id + '-engine.json',
+        self.connection_files = [get_ipython_dir() + '/profile_sge/security/ipcontroller-' + cluster_id + '-client.json',
+                                 get_ipython_dir() + '/profile_sge/security/ipcontroller-' + cluster_id + '-engine.json',
             ]
         if os.path.isfile(self.connection_files[0]):
             if os.path.isfile(self.connection_files[1]):
