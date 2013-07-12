@@ -6,6 +6,7 @@ from subprocess import Popen
 from multiprocessing import cpu_count
 from time import sleep
 from IPython.parallel import Client
+from IPython.utils.path import get_ipython_dir
 
 ASCAR_DEFAULT_NCPUS = 64
 
@@ -73,8 +74,8 @@ class StartCluster():
     def _cluster_started(self, cluster_id):
         home_dir = os.path.expanduser('~')
         started = False
-        self.connection_files = [home_dir + '/.config/ipython/profile_sge/security/ipcontroller-' + cluster_id + '-client.json',
-                                 home_dir + '/.config/ipython/profile_sge/security/ipcontroller-' + cluster_id + '-engine.json',
+        self.connection_files = [IPython.utils.path.get_ipython_dir() + '/profile_sge/security/ipcontroller-' + cluster_id + '-client.json',
+                                 IPython.utils.path.get_ipython_dir() + '/profile_sge/security/ipcontroller-' + cluster_id + '-engine.json',
             ]
         if os.path.isfile(self.connection_files[0]):
             if os.path.isfile(self.connection_files[1]):
